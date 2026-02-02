@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Random Lì Xì</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --muted:#a9b3d6;
+      --text:#eef2ff;
+      --accent:#ffcc66;
+      --danger:#ff5c77;
+      --ok:#4ade80;
+      --line:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1000px 600px at 20% 10%, rgba(255,204,102,.18), transparent 60%),
+                  radial-gradient(900px 500px at 80% 30%, rgba(92,231,255,.12), transparent 65%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .wrap{width:min(1080px,100%); display:grid; gap:16px}
+    .topbar{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;}
+    .brand{display:flex; align-items:center; gap:10px}
+    .badge{
+      padding:6px 10px; border:1px solid var(--line); border-radius:999px;
+      color:var(--muted); font-size:12px;
+      backdrop-filter: blur(6px);
+      background: rgba(255,255,255,.03);
+    }
+    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:16px;}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    h2{margin:0 0 10px; font-size:18px}
+    h3{margin:14px 0 8px; font-size:14px; color:#dbe3ff; letter-spacing:.02em}
+    p{margin:8px 0; color:var(--muted); line-height:1.5}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .row > *{flex:1}
+    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
+    input{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color:var(--text);
+      outline:none;
+    }
+    input:focus{border-color: rgba(255,204,102,.55)}
+    button{
+      cursor:pointer;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      font-weight:600;
+      transition: .15s ease;
+      white-space:nowrap;
+    }
+    button:hover{transform: translateY(-1px); background: rgba(255,255,255,.09)}
+    button:disabled{opacity:.45; cursor:not-allowed; transform:none}
+    .btn-accent{border-color: rgba(255,204,102,.45); background: rgba(255,204,102,.12);}
+    .btn-danger{border-color: rgba(255,92,119,.45); background: rgba(255,92,119,.10); color: #ffd5dc;}
+    .btn-ok{border-color: rgba(74,222,128,.35); background: rgba(74,222,128,.10); color:#ccffe0;}
+    .btn-mini{padding:7px 10px; border-radius:10px; font-size:12px;}
+    .msg{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-size:13px;
+      white-space: pre-line;
+    }
+    .msg.ok{border-color: rgba(74,222,128,.35); color:#ccffe0}
+    .msg.err{border-color: rgba(255,92,119,.35); color:#ffd5dc}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-size:12px;
+    }
+    .lixi-box{
+      margin-top:12px;
+      border-radius:16px;
+      border:1px dashed rgba(255,204,102,.35);
+      background: rgba(255,204,102,.06);
+      padding:14px;
+    }
+    .big{
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:.2px;
+      margin:8px 0 0;
+      color: var(--accent);
+      text-shadow: 0 10px 30px rgba(255,204,102,.22);
+    }
+    table{width:100%; border-collapse:collapse; margin-top:10px; font-size:13px}
+    th,td{padding:10px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top}
+    th{color:#cdd6ff; font-size:12px; text-transform:uppercase; letter-spacing:.08em}
+    .right{text-align:right}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
+    .hr{border:none; border-top:1px solid var(--line); margin:14px 0}
+    .hidden{display:none !important}
+    .kpi{display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:10px;}
+    @media (max-width: 980px){ .kpi{grid-template-columns:1fr} }
+    .kpi .box{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background: rgba(0,0,0,.14);
+    }
+    .kpi .label{font-size:12px; color:var(--muted)}
+    .kpi .val{margin-top:6px; font-weight:900; font-size:16px}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div style="font-size:22px">🧧</div>
+        <div>
+          <div style="font-weight:900; font-size:18px; line-height:1.2">Random Lì Xì</div>
+        </div>
+      </div>
+
+      <!-- Chỉ 1 badge trạng thái login -->
+      <div class="row" style="flex:0">
+        <span class="badge" id="sessionBadge">Chưa đăng nhập</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Left: Auth + Open -->
+      <div class="card">
+        <h2>Đăng ký / Đăng nhập</h2>
+
+        <!-- BEFORE LOGIN -->
+        <div id="authForm">
+          <div class="row">
+            <div>
+              <label>Tên đăng nhập</label>
+              <input id="username" placeholder="vd: an, binh, chi..." autocomplete="username" />
+            </div>
+            <div>
+              <label>Mật khẩu</label>
+              <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <button class="btn-accent" id="btnRegister">Tạo tài khoản</button>
+            <button id="btnLogin">Đăng nhập</button>
+          </div>
+
+          <div class="msg" id="authMsg">Tip: Tạo tài khoản rồi đăng nhập để mở lì xì.</div>
+        </div>
+
+        <!-- AFTER LOGIN -->
+        <div id="afterLogin" class="hidden">
+          <div class="row" style="align-items:center">
+            <span class="pill">👤 <span class="mono" id="helloUser">—</span></span>
+            <span class="pill">🔐 Vai trò: <span class="mono" id="roleText">user</span></span>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <button id="btnLogout2" class="btn-danger">Đăng xuất</button>
+          </div>
+
+          <div class="msg ok" id="loginOkMsg">✅ Đăng nhập thành công.</div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2>Mở lì xì</h2>
+        <div class="row" style="align-items:center">
+          <span class="pill">🎲 Random: <span class="mono" id="rangeLabel"></span></span>
+          <span class="pill">📌 Trạng thái: <span class="mono" id="openStatus">—</span></span>
+        </div>
+
+        <div class="lixi-box">
+          <p style="margin:0">Bấm để mở (mỗi tài khoản tối đa 1 lần):</p>
+          <div class="row" style="margin-top:10px">
+            <button class="btn-accent" id="btnOpen" disabled>🧧 MỞ LÌ XÌ</button>
+          </div>
+
+          <div id="resultArea">
+            <div class="big" id="amountText">—</div>
+            <p style="color:var(--muted); margin:6px 0 0" id="openedAtText"></p>
+          </div>
+        </div>
+
+        <div class="msg" id="openMsg">Bạn cần đăng nhập để mở.</div>
+      </div>
+
+      <!-- Right: History for users (ẩn khi chưa login) -->
+      <div class="card hidden" id="historyCard">
+        <h2>Lịch sử mở lì xì</h2>
+
+        <div class="msg" id="historyMsg">—</div>
+
+        <table id="historyTbl" class="hidden">
+          <thead>
+            <tr>
+              <th>Tài khoản</th>
+              <th class="right">Số tiền</th>
+              <th>Thời gian</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <p style="color:var(--muted); margin-top:12px">
+        </p>
+      </div>
+
+      <!-- Admin dashboard (chỉ hiện khi admin) -->
+      <div class="card hidden" id="adminDashboard">
+        <h2>Admin Dashboard</h2>
+        <p style="color:var(--muted)">Chỉ admin mới thấy phần này (quản lý & dữ liệu).</p>
+
+        <div class="row" style="margin-top:10px">
+          <button id="btnAdminExport" class="btn-ok">Export JSON</button>
+          <button id="btnAdminResetAllOpened" class="btn-danger">Reset toàn bộ “đã mở”</button>
+          <button id="btnAdminWipeAll" class="btn-danger">Xoá toàn bộ dữ liệu</button>
+        </div>
+
+        <div class="kpi">
+          <div class="box">
+            <div class="label">Tổng tài khoản</div>
+            <div class="val mono" id="kpiTotal">—</div>
+          </div>
+          <div class="box">
+            <div class="label">Đã mở</div>
+            <div class="val mono" id="kpiOpened">—</div>
+          </div>
+          <div class="box">
+            <div class="label">Tổng tiền đã mở</div>
+            <div class="val mono" id="kpiSum">—</div>
+          </div>
+        </div>
+
+        <h3>Quản lý tài khoản</h3>
+        <table id="adminTbl">
+          <thead>
+            <tr>
+              <th>Tài khoản</th>
+              <th class="right">Đã mở</th>
+              <th class="right">Số tiền</th>
+              <th>Thời gian</th>
+              <th class="right">Hành động</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <div class="msg" id="adminMsg">—</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // ====== Config tiền lì xì ======
+  const MIN = 10000;    // 10k
+  const MAX = 500000;   // 200k
+  const STEP = 1000;    // bội số
+
+  // ====== Admin credentials (đổi ở đây) ======
+  const ADMIN_USERNAME = "admin";
+  const ADMIN_PASSWORD = "admin123";
+
+  // ====== Storage ======
+  const LS_KEY = "lixi_app_final_v1";
+  const MAX_USERS = 10;
+
+  function loadDB(){
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return { users: {}, session: { username: null, isAdmin: false } };
+    try{
+      const db = JSON.parse(raw);
+      db.users ||= {};
+      db.session ||= { username: null, isAdmin: false };
+      if(typeof db.session.isAdmin !== "boolean") db.session.isAdmin = false;
+
+      // nếu session user đã bị xoá -> logout
+      if(db.session.username && !db.session.isAdmin && !db.users[db.session.username]){
+        db.session.username = null;
+      }
+      return db;
+    } catch {
+      return { users: {}, session: { username: null, isAdmin: false } };
+    }
+  }
+  function saveDB(db){ localStorage.setItem(LS_KEY, JSON.stringify(db)); }
+
+  // ====== Helpers ======
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => n.toLocaleString("vi-VN") + " ₫";
+  function nowISO(){ return new Date().toISOString(); }
+  function isoToLocal(iso){
+    try{ return new Date(iso).toLocaleString("vi-VN"); }
+    catch{ return iso || ""; }
+  }
+  function randInt(min, max){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  function randomAmount(){
+    const minK = Math.ceil(MIN / STEP);
+    const maxK = Math.floor(MAX / STEP);
+    return randInt(minK, maxK) * STEP;
+  }
+
+  // ====== Password hashing (SHA-256) ======
+  function toHex(buffer){
+    return [...new Uint8Array(buffer)].map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+  function randomSalt(){
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+    return toHex(arr.buffer);
+  }
+  async function sha256(str){
+    const enc = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest("SHA-256", enc);
+    return toHex(buf);
+  }
+  async function hashPassword(password, salt){
+    return await sha256(salt + "::" + password);
+  }
+
+  // ====== State ======
+  let db = loadDB();
+  function loggedIn(){ return !!db.session.username; }
+  function isAdmin(){ return !!db.session.isAdmin && db.session.username === ADMIN_USERNAME; }
+  function currentUser(){
+    if(isAdmin()) return null;
+    const u = db.session.username;
+    if(!u) return null;
+    return db.users[u] ? u : null;
+  }
+  function setMsg(el, text, type=""){
+    el.classList.remove("ok","err");
+    if(type) el.classList.add(type);
+    el.textContent = text;
+  }
+  function validateUsername(u){
+    u = (u || "").trim();
+    if(u.length < 3) return "Tên đăng nhập tối thiểu 3 ký tự.";
+    if(u.length > 24) return "Tên đăng nhập tối đa 24 ký tự.";
+    if(!/^[a-zA-Z0-9._-]+$/.test(u)) return "Chỉ dùng chữ/số và . _ -";
+    if(u === ADMIN_USERNAME) return "Tên này dành cho admin, vui lòng chọn tên khác.";
+    return null;
+  }
+  function validatePassword(p){
+    if(!p || p.length < 4) return "Mật khẩu tối thiểu 4 ký tự.";
+    if(p.length > 64) return "Mật khẩu tối đa 64 ký tự.";
+    return null;
+  }
+
+  // ====== Render: History (user) ======
+  function refreshHistory(){
+    const adminOn = isAdmin();
+    const u = currentUser(); // null nếu chưa login hoặc admin
+
+    // Admin: không hiện lịch sử
+    if(adminOn){
+      $("historyCard").classList.add("hidden");
+      return;
+    }
+
+    // Chưa đăng nhập: ẩn hẳn lịch sử
+    if(!u){
+      $("historyCard").classList.add("hidden");
+      return;
+    }
+
+    // User login: hiện lịch sử
+    $("historyCard").classList.remove("hidden");
+
+    const rows = Object.entries(db.users)
+      .filter(([name, info]) => name !== u && !!info.opened)
+      .sort((a,b) => (b[1].openedAt || "").localeCompare(a[1].openedAt || ""));
+
+    const tbody = $("historyTbl").querySelector("tbody");
+    tbody.innerHTML = "";
+
+    for(const [name, info] of rows){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="mono">${name}</span></td>
+        <td class="right">${fmt(info.amount || 0)}</td>
+        <td><span style="color:var(--muted)">${isoToLocal(info.openedAt)}</span></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    $("historyTbl").classList.toggle("hidden", rows.length === 0);
+    setMsg(
+      $("historyMsg"),
+      rows.length ? `Có ${rows.length} tài khoản khác đã mở.` : "Chưa có tài khoản nào khác mở lì xì.",
+      ""
+    );
+  }
+
+  // ====== Render: Admin dashboard ======
+  function refreshAdmin(){
+    const adminOn = isAdmin();
+    $("adminDashboard").classList.toggle("hidden", !adminOn);
+    if(!adminOn) return;
+
+    const users = Object.entries(db.users).sort((a,b)=>a[0].localeCompare(b[0], "vi"));
+    const total = users.length;
+    const openedCount = users.filter(([_,info])=>!!info.opened).length;
+    const sum = users.reduce((acc,[_,info])=>acc + (info.opened ? (info.amount||0) : 0), 0);
+
+    $("kpiTotal").textContent = `${total}/${MAX_USERS}`;
+    $("kpiOpened").textContent = `${openedCount}`;
+    $("kpiSum").textContent = fmt(sum);
+
+    const tbody = $("adminTbl").querySelector("tbody");
+    tbody.innerHTML = "";
+
+    for(const [name, info] of users){
+      const opened = !!info.opened;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="mono">${name}</span></td>
+        <td class="right">${opened ? "✅" : "—"}</td>
+        <td class="right">${opened ? fmt(info.amount) : "—"}</td>
+        <td>${opened ? `<span style="color:var(--muted)">${isoToLocal(info.openedAt)}</span>` : "—"}</td>
+        <td class="right">
+          <button class="btn-mini btn-ok" data-act="reset-open" data-user="${name}" ${opened ? "" : "disabled"}>Reset mở</button>
+          <button class="btn-mini btn-danger" data-act="delete-user" data-user="${name}">Xoá</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    setMsg(
+      $("adminMsg"),
+      `Admin ON. Bạn có thể export/reset/xoá tại đây.\nLưu ý: dữ liệu lưu localStorage trên trình duyệt này.`,
+      "ok"
+    );
+  }
+
+  // ====== Main refresh ======
+  function refresh(){
+    // Badge trạng thái
+    $("sessionBadge").textContent = loggedIn()
+      ? `Đang đăng nhập: ${db.session.username}`
+      : "Chưa đăng nhập";
+
+    // Toggle auth
+    $("authForm").classList.toggle("hidden", loggedIn());
+    $("afterLogin").classList.toggle("hidden", !loggedIn());
+    if(loggedIn()){
+      $("helloUser").textContent = db.session.username;
+      $("roleText").textContent = isAdmin() ? "admin" : "user";
+    }
+
+    // Range
+    $("rangeLabel").textContent = `${fmt(MIN)} → ${fmt(MAX)} (bội ${STEP.toLocaleString("vi-VN")})`;
+
+    // Open lixi
+    if(isAdmin()){
+      $("btnOpen").disabled = true;
+      $("openStatus").textContent = "Admin (không mở)";
+      $("amountText").textContent = "—";
+      $("openedAtText").textContent = "";
+      setMsg($("openMsg"), "Bạn đang đăng nhập admin. Mở lì xì bị tắt.", "ok");
+    } else {
+      const cu = currentUser();
+      if(!cu){
+        $("btnOpen").disabled = true;
+        $("openStatus").textContent = "Chưa đăng nhập";
+        $("amountText").textContent = "—";
+        $("openedAtText").textContent = "";
+        setMsg($("openMsg"), "Bạn cần đăng nhập để mở.", "");
+      } else {
+        const info = db.users[cu];
+        if(info.opened){
+          $("btnOpen").disabled = true;
+          $("openStatus").textContent = "Đã mở";
+          $("amountText").textContent = fmt(info.amount);
+          $("openedAtText").textContent = `Mở lúc: ${isoToLocal(info.openedAt)}`;
+          setMsg($("openMsg"), "Tài khoản này đã mở rồi (chỉ 1 lần).", "ok");
+        } else {
+          $("btnOpen").disabled = false;
+          $("openStatus").textContent = "Chưa mở";
+          $("amountText").textContent = "—";
+          $("openedAtText").textContent = "";
+          setMsg($("openMsg"), "Sẵn sàng! Bấm “MỞ LÌ XÌ”.", "");
+        }
+      }
+    }
+
+    // Right panels
+    refreshHistory();
+    refreshAdmin();
+  }
+
+  // ====== Actions ======
+  $("btnRegister").addEventListener("click", async () => {
+    const u = $("username").value.trim();
+    const p = $("password").value;
+
+    const uErr = validateUsername(u);
+    if(uErr) return setMsg($("authMsg"), uErr, "err");
+    const pErr = validatePassword(p);
+    if(pErr) return setMsg($("authMsg"), pErr, "err");
+
+    if(db.users[u]) return setMsg($("authMsg"), "Tên đăng nhập đã tồn tại.", "err");
+    if(Object.keys(db.users).length >= MAX_USERS) return setMsg($("authMsg"), "Đã đạt tối đa 10 tài khoản.", "err");
+
+    const salt = randomSalt();
+    const passHash = await hashPassword(p, salt);
+
+    db.users[u] = { salt, passHash, opened:false, amount:null, openedAt:null };
+    saveDB(db);
+
+    setMsg($("authMsg"), `✅ Tạo tài khoản thành công: ${u}`, "ok");
+    refresh();
+  });
+
+  $("btnLogin").addEventListener("click", async () => {
+    const u = $("username").value.trim();
+    const p = $("password").value;
+
+    // Admin login
+    if(u === ADMIN_USERNAME && p === ADMIN_PASSWORD){
+      db.session.username = ADMIN_USERNAME;
+      db.session.isAdmin = true;
+      saveDB(db);
+      refresh();
+      return;
+    }
+
+    // User login
+    if(!db.users[u]) return setMsg($("authMsg"), "Sai tài khoản hoặc mật khẩu.", "err");
+    const info = db.users[u];
+    const tryHash = await hashPassword(p, info.salt);
+    if(tryHash !== info.passHash) return setMsg($("authMsg"), "Sai tài khoản hoặc mật khẩu.", "err");
+
+    db.session.username = u;
+    db.session.isAdmin = false;
+    saveDB(db);
+    refresh();
+  });
+
+  function doLogout(){
+    db.session.username = null;
+    db.session.isAdmin = false;
+    saveDB(db);
+    refresh();
+  }
+  $("btnLogout2").addEventListener("click", doLogout);
+
+  $("btnOpen").addEventListener("click", () => {
+    const cu = currentUser();
+    if(!cu) return;
+    const info = db.users[cu];
+    if(info.opened) return;
+
+    const amount = randomAmount();
+    info.opened = true;
+    info.amount = amount;
+    info.openedAt = nowISO();
+    db.users[cu] = info;
+
+    saveDB(db);
+    refresh();
+  });
+
+  // ====== Admin actions ======
+  $("adminTbl").addEventListener("click", (e) => {
+    if(!isAdmin()) return;
+    const btn = e.target.closest("button[data-act]");
+    if(!btn) return;
+
+    const act = btn.dataset.act;
+    const user = btn.dataset.user;
+    if(!db.users[user]) return;
+
+    if(act === "reset-open"){
+      db.users[user].opened = false;
+      db.users[user].amount = null;
+      db.users[user].openedAt = null;
+      saveDB(db);
+      refresh();
+      return;
+    }
+
+    if(act === "delete-user"){
+      if(!confirm(`Xoá tài khoản "${user}"?`)) return;
+      delete db.users[user];
+      saveDB(db);
+      refresh();
+      return;
+    }
+  });
+
+  $("btnAdminResetAllOpened").addEventListener("click", () => {
+    if(!isAdmin()) return;
+    if(!confirm("Reset toàn bộ trạng thái “đã mở” cho TẤT CẢ tài khoản? (Không xoá tài khoản)")) return;
+    for(const name of Object.keys(db.users)){
+      db.users[name].opened = false;
+      db.users[name].amount = null;
+      db.users[name].openedAt = null;
+    }
+    saveDB(db);
+    refresh();
+  });
+
+  $("btnAdminWipeAll").addEventListener("click", () => {
+    if(!isAdmin()) return;
+    if(!confirm("Xoá toàn bộ dữ liệu? (Mất hết tài khoản & kết quả)")) return;
+    localStorage.removeItem(LS_KEY);
+    db = loadDB();
+    refresh();
+  });
+
+  $("btnAdminExport").addEventListener("click", async () => {
+    if(!isAdmin()) return;
+    const exportObj = { exportedAt: new Date().toISOString(), users: db.users };
+    const text = JSON.stringify(exportObj, null, 2);
+    try{
+      await navigator.clipboard.writeText(text);
+      setMsg($("adminMsg"), "✅ Đã copy JSON vào clipboard.", "ok");
+    } catch {
+      const blob = new Blob([text], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "lixi-export.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      setMsg($("adminMsg"), "✅ Clipboard bị chặn → đã tải file lixi-export.json.", "ok");
+    }
+  });
+
+  // init
+  refresh();
+})();
+</script>
+</body>
+</html>
